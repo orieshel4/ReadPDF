@@ -1,41 +1,32 @@
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.text.PDFTextStripper;
-
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.math.BigDecimal;
 
 
 public class Main {
     public static void main(String[] args) {
-        try (PDDocument document = PDDocument.load(new File("C:\\\\Users\\\\ories\\\\Desktop\\\\mom\\\\exa.pdf"))) {
-            PDFTextStripper textStripper = new PDFTextStripper();
-            String pdfText = textStripper.getText(document);
+        BigDecimal sumHours = BigDecimal.ZERO;
+        //ReadPDF readPDF = new ReadPDF();
+        String filePath = "C:\\\\Users\\\\ories\\\\Desktop\\\\mom\\\\ex (1).pdf";
 
-            int lineNumber = 57;
+        String folderPath = "C:\\\\Users\\\\ories\\\\Desktop\\\\mom"; // Specify the folder path
 
-            String[] lines = pdfText.split("\\r?\\n");
-            String lineToExtract = lines[lineNumber - 1]; // Adjust the line number to match the array index
+        File folder = new File(folderPath);
+        File[] files = folder.listFiles();
 
-            String regex = "\\d+\\.\\d{2}"; // Regular expression to match decimal numbers with 2 digits after the dot
-
-            Pattern pattern = Pattern.compile(regex);
-            Matcher matcher = pattern.matcher(lineToExtract);
-
-            int decimalNumberCount = 0;
-            while (matcher.find()) {
-                decimalNumberCount++;
-                if (decimalNumberCount == 2) {
-                    String extractedNumber = matcher.group();
-                    System.out.println("Extracted Number: " + extractedNumber);
-                    break;
+        if (files != null) {
+            for (File file : files) {
+                if (file.isFile()) {
+                    ReadPDF readPDF = new ReadPDF();
+                    System.out.println("Reading file: " + file.getName());
+                    readPDF.readFile(file);
+                    sumHours = sumHours.add(readPDF.getSum());
                 }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
+        System.out.println("=============");
+        System.out.printf("Total hours: " + sumHours);
     }
 }
+
+
+
